@@ -7,8 +7,8 @@ import requests
 # Telegram konfigurace
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
-KEYWORD = "počet es v zápasu"
-URL = "https://www.chance.cz/kurzy/tenis"
+KEYWORD = "arsenal"
+URL = "https://www.coen.wz.cz/"
 
 already_sent = False  # abychom poslali upozornění jen jednou
 
