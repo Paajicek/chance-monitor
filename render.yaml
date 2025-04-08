@@ -1,0 +1,11 @@
+services:
+  - type: worker
+    name: chance-monitor
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: BOT_TOKEN
+        value: 7785381597:AAFPf-jjYqSO_Db9w7avMXa3lq3PP3GbNb0
+      - key: CHAT_ID
+        value: 1842186722
