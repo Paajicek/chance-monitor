@@ -9,8 +9,16 @@ TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 URL = "https://www.chance.cz/kurzy/"
 TARGET_TEXT = "Počet gamů"
-ALERT_ALREADY_SENT = False  # Hlídá, zda už upozornění bylo posláno
-VISITED_URLS = set()  # Hlídá, které zápasy jsme už kontrolovali
+ALERT_ALREADY_SENT = False
+VISITED_URLS = set()
+
+async def send_telegram_message(message: str):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
+    try:
+        requests.post(url, data=payload)
+    except Exception as e:
+        print(f"Chyba při odesílání zprávy: {e}")
 
 async def check_site(playwright):
     global ALERT_ALREADY_SENT
