@@ -26,7 +26,7 @@ async def check_site(playwright):
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     await page.goto(URL, timeout=60000)
-    await page.wait_for_timeout(5000)  # počkej na načtení zápasů
+    await page.wait_for_timeout(5000)
 
     links = await page.locator('a[href^="/kurzy/zapas/"]').all()
     print(f"🔍 Nalezeno {len(links)} zápasů ke kontrole.")
@@ -68,8 +68,8 @@ async def main():
         while True:
             print("🔄 Spouštím novou kontrolu...")
             await check_site(playwright)
-            print("⏳ Čekám 30 sekund...\n")
-            await asyncio.sleep(30)
+            print("⏳ Čekám 60 sekund...\n")
+            await asyncio.sleep(60)
 
 if __name__ == "__main__":
     asyncio.run(main())
