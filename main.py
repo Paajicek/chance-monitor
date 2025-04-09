@@ -68,8 +68,8 @@ async def main():
         while True:
             print("🔄 Spouštím novou kontrolu...")
             await check_site(playwright)
-            print("⏳ Čekám 60 sekund...\n")
-            await asyncio.sleep(60)
+            print("⏳ Čekám 90 sekund...\n")
+            await asyncio.sleep(90)
 
 if __name__ == "__main__":
     asyncio.run(main())
