@@ -27,8 +27,8 @@ async def check_site(playwright):
     await page.goto(URL, timeout=60000)
 await page.wait_for_selector('a[href^="/kurzy/zapas/"]', timeout=10000)
 
-    links = await page.locator('a[href^="/kurzy/zapas/"]').all()
-    print(f"Nalezeno {len(links)} zápasů ke kontrole.")
+links = await page.locator('a[href^="/kurzy/zapas/"]').all()
+print(f"Nalezeno {len(links)} zápasů ke kontrole.")
 
 for link in links:
     print(await link.get_attribute("href"))
