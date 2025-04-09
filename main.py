@@ -25,10 +25,13 @@ async def check_site(playwright):
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     await page.goto(URL, timeout=60000)
-    await page.wait_for_timeout(5000)
+await page.wait_for_selector('a[href^="/kurzy/zapas/"]', timeout=10000)
 
     links = await page.locator('a[href^="/kurzy/zapas/"]').all()
     print(f"Nalezeno {len(links)} zápasů ke kontrole.")
+
+for link in links:
+    print(await link.get_attribute("href"))
 
     for link in links:
         href = await link.get_attribute("href")
