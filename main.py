@@ -23,6 +23,8 @@ async def send_telegram_message(message: str):
 
 async def check_site(playwright):
     global ALERT_ALREADY_SENT
+    print("🟢 Skript main.py se opravdu spustil...")
+    
     browser = await playwright.chromium.launch(headless=True)
     page = await browser.new_page()
     await page.goto(URL, timeout=60000)
