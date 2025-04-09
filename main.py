@@ -1,3 +1,5 @@
+print("🟢 Skript main.py se opravdu spustil...")
+
 import os
 import asyncio
 from playwright.async_api import async_playwright
@@ -6,6 +8,10 @@ import requests
 # Telegram konfigurace
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+
+if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+    print("❌ Chyba: TELEGRAM_BOT_TOKEN nebo TELEGRAM_CHAT_ID nejsou nastaveny!")
+    exit(1)
 
 URL = "https://www.chance.cz/kurzy/"
 TARGET_TEXT = "Počet gamů"
@@ -23,12 +29,16 @@ async def send_telegram_message(message: str):
 
 async def check_site(playwright):
     global ALERT_ALREADY_SENT
-    print("🟢 Skript main.py se opravdu spustil...")
-    
     browser = await playwright.chromium.launch(headless=True)
+    print("🌍 Prohlížeč spuštěn.")
     page = await browser.new_page()
-    await page.goto(URL, timeout=60000)
-    await page.wait_for_timeout(5000)
+    try:
+        await page.goto(URL, timeout=60000)
+        await page.wait_for_timeout(5000)
+    except Exception as e:
+        print(f"❌ Chyba při načítání hlavní stránky: {e}")
+        await browser.close()
+        return
 
     links = await page.locator('a[href^="/kurzy/zapas/"]').all()
     print(f"🔍 Nalezeno {len(links)} zápasů ke kontrole.")
@@ -40,13 +50,11 @@ async def check_site(playwright):
 
         full_url = f"https://www.chance.cz{href}"
         VISITED_URLS.add(href)
-
         print(f"➡️ Kontroluji: {full_url}")
         try:
             sub_page = await browser.new_page()
             await sub_page.goto(full_url, timeout=60000)
             await sub_page.wait_for_timeout(3000)
-
             text = await sub_page.locator("body").inner_text()
 
             if TARGET_TEXT.lower() in text.lower():
@@ -58,7 +66,6 @@ async def check_site(playwright):
                 continue
             else:
                 print("❌ Text nenalezen.")
-
             await sub_page.close()
         except Exception as e:
             print(f"❗ Chyba při kontrole stránky {full_url}: {e}")
@@ -68,10 +75,13 @@ async def check_site(playwright):
 async def main():
     async with async_playwright() as playwright:
         while True:
-            print("🔄 Spouštím novou kontrolu...")
+            print("🔁 Nová kontrola spuštěna...")
             await check_site(playwright)
             print("⏳ Čekám 90 sekund...\n")
             await asyncio.sleep(90)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"❌ Kritická chyba: {e}")
