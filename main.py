@@ -8,7 +8,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 URL = "https://www.chance.cz/kurzy/"
-TARGET_TEXT = "Počet gamů v zápasu"
+TARGET_TEXT = "Počet gamů"
 ALERT_ALREADY_SENT = False  # Hlídá, zda už upozornění bylo posláno
 VISITED_URLS = set()  # Hlídá, které zápasy jsme už kontrolovali
 
