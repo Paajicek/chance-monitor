@@ -53,23 +53,6 @@ async def check_site(playwright):
 
     await browser.close()
 
-            content = await sub_page.content()
-            if TARGET_TEXT in content:
-                print(f"Text nalezen na: {full_url}")
-                if not ALERT_ALREADY_SENT:
-                    await send_telegram_message(f"Text '{TARGET_TEXT}' nalezen na: {full_url}")
-                    ALERT_ALREADY_SENT = True
-                await sub_page.close()
-                continue
-            else:
-                print("Text nenalezen.")
-
-            await sub_page.close()
-        except Exception as e:
-            print(f"Chyba při kontrole stránky {full_url}: {e}")
-
-    await browser.close()
-
 async def main():
     async with async_playwright() as playwright:
         while True:
