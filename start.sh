@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Installing Playwright dependencies..."
+echo "✅ Instalace Playwrightu..."
 playwright install chromium
 
-echo "Starting main script..."
+echo "🚀 Spouštím skript..."
 python3 main.py
