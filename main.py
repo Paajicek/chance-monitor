@@ -12,14 +12,6 @@ TARGET_TEXT = "Počet gamů"
 ALERT_ALREADY_SENT = False
 VISITED_URLS = set()
 
-async def send_telegram_message(message: str):
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
-    try:
-        requests.post(url, data=payload)
-    except Exception as e:
-        print(f"Chyba při odesílání zprávy: {e}")
-
 async def check_site(playwright):
     global ALERT_ALREADY_SENT
     browser = await playwright.chromium.launch(headless=True)
@@ -44,17 +36,18 @@ async def check_site(playwright):
             await sub_page.goto(full_url, timeout=60000)
             await sub_page.wait_for_timeout(3000)
 
-         text = await sub_page.locator("body").inner_text()
+            # Tady byl problém s odsazením:
+            text = await sub_page.locator("body").inner_text()
 
-if TARGET_TEXT.lower() in text.lower():
-    print(f"Text nalezen na: {full_url}")
-    if not ALERT_ALREADY_SENT:
-        await send_telegram_message(f"Text '{TARGET_TEXT}' nalezen na: {full_url}")
-        ALERT_ALREADY_SENT = True
-    await sub_page.close()
-    continue
-else:
-    print("Text nenalezen.")
+            if TARGET_TEXT.lower() in text.lower():
+                print(f"Text nalezen na: {full_url}")
+                if not ALERT_ALREADY_SENT:
+                    await send_telegram_message(f"Text '{TARGET_TEXT}' nalezen na: {full_url}")
+                    ALERT_ALREADY_SENT = True
+                await sub_page.close()
+                continue
+            else:
+                print("Text nenalezen.")
 
             await sub_page.close()
         except Exception as e:
