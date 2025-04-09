@@ -44,16 +44,17 @@ async def check_site(playwright):
             await sub_page.goto(full_url, timeout=60000)
             await sub_page.wait_for_timeout(3000)
 
-            content = await sub_page.content()
-            if TARGET_TEXT in content:
-                print(f"Text nalezen na: {full_url}")
-                if not ALERT_ALREADY_SENT:
-                    await send_telegram_message(f"Text '{TARGET_TEXT}' nalezen na: {full_url}")
-                    ALERT_ALREADY_SENT = True
-                await sub_page.close()
-                continue
-            else:
-                print("Text nenalezen.")
+         text = await sub_page.locator("body").inner_text()
+
+if TARGET_TEXT.lower() in text.lower():
+    print(f"Text nalezen na: {full_url}")
+    if not ALERT_ALREADY_SENT:
+        await send_telegram_message(f"Text '{TARGET_TEXT}' nalezen na: {full_url}")
+        ALERT_ALREADY_SENT = True
+    await sub_page.close()
+    continue
+else:
+    print("Text nenalezen.")
 
             await sub_page.close()
         except Exception as e:
